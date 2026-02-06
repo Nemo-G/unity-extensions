@@ -1,0 +1,70 @@
+{
+  "title": "CSharp代码开发模板",
+  "version": "1.0",
+  "game_name": "{GameName}",
+  "stories": [
+    {
+      "id": "script-001",
+      "category": "script",
+      "description": "GameManager.cs - 游戏状态管理器",
+      "details": "功能: 游戏状态管理（等待开始、游戏中、游戏结束、暂停）、分数计算和存储、游戏速度控制、场景加载和重启、游戏配置管理 | 关键方法: StartGame(), EndGame(), PauseGame(), ResumeGame(), RestartGame(), AddScore(int value) | 关键属性: public static GameManager Instance, public int CurrentScore, public bool IsGameActive | 输入: Input Action: Pause (ESC键)",
+      "passes": false
+    },
+    {
+      "id": "script-002",
+      "category": "script",
+      "description": "PlayerController.cs - 玩家控制器",
+      "details": "功能: 玩家移动和跳跃控制、重力模拟、动画控制、碰撞检测、生命值管理 | 关键方法: Move(Vector2 direction), Jump(), TakeDamage(int damage) | 关键属性: public float MoveSpeed, public float JumpForce, public int Health | 输入: Input Action: Move, Jump",
+      "passes": false
+    },
+    {
+      "id": "script-003",
+      "category": "script",
+      "description": "CameraController.cs - 相机控制器",
+      "details": "功能: 相机跟随玩家、视角控制（如适用）、相机震动效果",
+      "passes": false
+    },
+    {
+      "id": "script-004",
+      "category": "script",
+      "description": "CollectibleSystem.cs - 收集物系统",
+      "details": "功能: 收集物管理、收集检测、收集效果触发",
+      "passes": false
+    },
+    {
+      "id": "script-005",
+      "category": "script",
+      "description": "EnemyAI.cs - 敌人AI",
+      "details": "功能: 敌人巡逻行为、追击玩家、攻击逻辑",
+      "passes": false
+    },
+    {
+      "id": "script-006",
+      "category": "utility",
+      "description": "Singleton.cs - 单例基类",
+      "details": "功能: 单例基类、泛型实现、自动实例化",
+      "passes": false
+    },
+    {
+      "id": "script-007",
+      "category": "utility",
+      "description": "ObjectPool.cs - 对象池",
+      "details": "功能: 对象池管理、对象回收和重用、性能优化",
+      "passes": false
+    },
+    {
+      "id": "script-008",
+      "category": "data",
+      "description": "GameConfig.cs - 游戏配置",
+      "details": "功能: 游戏配置数据、使用ScriptableObject、配置项：玩家速度、重力、关卡参数",
+      "passes": false
+    },
+    {
+      "id": "script-009",
+      "category": "data",
+      "description": "Enums.cs - 枚举定义",
+      "details": "内容: 游戏状态枚举、物品类型枚举、关卡难度枚举",
+      "passes": false
+    }
+  ]
+}

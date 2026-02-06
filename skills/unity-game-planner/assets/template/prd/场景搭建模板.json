@@ -1,0 +1,192 @@
+{
+  "title": "场景搭建模板",
+  "version": "1.0",
+  "game_name": "{GameName}",
+  "dependencies": [
+    "美术资产制作",
+    "CSharp代码开发",
+    "InputActions配置",
+    "Prefab制作"
+  ],
+  "scene_config": {
+    "path": "Assets/Games/{GameName}/Scenes/{GameName}.unity",
+    "name": "{GameName}"
+  },
+  "stories": [
+    {
+      "id": "scene-001",
+      "category": "gameobject",
+      "description": "Player实例",
+      "details": "对象名: Player | 来源Prefab: Player.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (-5, 1, 0)",
+            "Rotation: (0, 0, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-002",
+      "category": "gameobject",
+      "description": "Enemy1实例",
+      "details": "对象名: Enemy1 | 来源Prefab: Enemy.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (5, 1, 0)",
+            "Rotation: (0, 180, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-003",
+      "category": "gameobject",
+      "description": "Enemy2实例",
+      "details": "对象名: Enemy2 | 来源Prefab: Enemy.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (10, 1, 0)",
+            "Rotation: (0, 180, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-004",
+      "category": "gameobject",
+      "description": "Coin1实例",
+      "details": "对象名: Coin1 | 来源Prefab: Collectible.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (0, 2, 0)",
+            "Rotation: (0, 0, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-005",
+      "category": "gameobject",
+      "description": "Coin2实例",
+      "details": "对象名: Coin2 | 来源Prefab: Collectible.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (3, 3, 0)",
+            "Rotation: (0, 0, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-006",
+      "category": "gameobject",
+      "description": "Platform1实例",
+      "details": "对象名: Platform1 | 来源Prefab: Platform.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (0, 0, 0)",
+            "Rotation: (0, 0, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-007",
+      "category": "gameobject",
+      "description": "Platform2实例",
+      "details": "对象名: Platform2 | 来源Prefab: Platform.prefab",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (5, 0, 0)",
+            "Rotation: (0, 0, 0)",
+            "Scale: 保持Prefab源数值"
+          ]
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-008",
+      "category": "camera",
+      "description": "Main Camera",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (0, 5, -10)",
+            "Rotation: (30, 0, 0)",
+            "Scale: (1, 1, 1)"
+          ]
+        },
+        {
+          "type": "Camera",
+          "properties": "Clear Flags Skybox, Background (0.5, 0.7, 1, 1), Projection Perspective, Field of View 60, Clipping Planes Near 0.3 Far 1000"
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-009",
+      "category": "lighting",
+      "description": "Directional Light",
+      "components": [
+        {
+          "type": "Transform",
+          "properties": [
+            "Position: (0, 10, 0)",
+            "Rotation: (50, -30, 0)",
+            "Scale: (1, 1, 1)"
+          ]
+        },
+        {
+          "type": "Light",
+          "properties": "Type Directional, Mode Realtime, Intensity 1, Color (1, 1, 1), Shadow Type Soft Shadows"
+        }
+      ],
+      "passes": false
+    },
+    {
+      "id": "scene-010",
+      "category": "environment",
+      "description": "环境光照",
+      "components": [],
+      "details": "Skybox Material: Skybox.mat | Ambient Source: Skybox | Ambient Intensity: 1 | Reflection Source: Skybox | Reflection Intensity: 1",
+      "passes": false
+    },
+    {
+      "id": "scene-011",
+      "category": "post_processing",
+      "description": "后处理设置（URP）",
+      "components": [],
+      "details": "Volume Profile: VolumeProfile.asset | Color Adjustments: 启用 | Bloom: 启用 | Vignette: 启用",
+      "passes": false
+    }
+  ]
+}
