@@ -1,6 +1,6 @@
 ---
 name: unity-operator
-description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_* builtin tools（含 create_batch/edit_batch）完成 State → Action → Verify → Correct；仅当内置工具不足时，才使用 execute_csharp_script 在 Editor 中执行短小、安全、可验证的 C# 脚本来完成复杂/批量逻辑。包含脚本模板、验证流程和 few-shot 示例。
+description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_* builtin tools（含 *.batch）完成 State → Action → Verify → Correct；仅当内置工具不足时，才使用 execute_csharp_script 在 Editor 中执行短小、安全、可验证的 C# 脚本来完成复杂/批量逻辑。包含脚本模板、验证流程和 few-shot 示例。
 ---
 
 # 操作者 - Unity Editor自动化技能
@@ -15,7 +15,7 @@ description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_*
 
 0. **推荐**：优先使用 `unity_workflow { "action": "init_session" }` 一次完成「状态同步 + 清空 Console（拿到 since_token）+ 等待 idle」。
 
-1. 使用 `unity_editor` 同步状态（推荐，但**写操作 tools 会自动同步并注入 `client_state_rev`**；不要手动填写 `client_state_rev`）
+1. 使用 `unity_editor` 同步状态（获取 `state.rev` / `client_state_rev`）
 2. 使用 `unity_console` 清空Unity Console日志，记录 `sinceToken`（用于只读取本次操作的新日志）
 3. 使用 `unity_editor` 等待Unity空闲（`wait_for_idle`）
 4. （可选）检查 skill 的 `assets/CSharp/` 文件夹，查找类似代码文件作为参考
@@ -24,15 +24,12 @@ description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_*
 
 1. 明确目标对象/场景/资产的定位方式（名称、层级路径、GUID、选择集）
 2. 优先选择 builtin tools（`unity_*` / `unity_workflow`）完成：State → Action → Verify → Correct
-   - 对于重复/连续操作，只有在 **ops 完全确定**（不需要“做完一步再看结果决定下一步”）时，才用 `create_batch` / `edit_batch` 压缩调用数
-     - ✅ `create_batch`：**只做写**，做完再用 read-only 工具观测（console/hierarchy/get_info）
-     - ✅ `edit_batch`：**先 find/search 再写**；若 find/search 到 0 个会 early-stop 且不算 error
+   - 对于重复/连续操作，只有在 **ops 完全确定**（不需要“做完一步再看结果决定下一步”）时，才用 `unity_asset.batch` / `unity_gameobject.batch` 压缩调用数
+     - ✅ **写批只做写**，做完再用 read-only 工具观测（console/hierarchy/get_info）
+     - ✅ **读批只做读**（观测批）
      - ✅ 每个 batch **≤ 10 ops**
      - ✅ 写批里 target/parent 必须是 **instanceID / $alias / hierarchy_path(by_path)**（避免 by_name）
-     - ✅ 新建对象链路：优先用 `unity_gameobject { "action": "create_batch" }`（只写，不依赖 find）
-     - ✅ 编辑已有对象：优先用 `unity_gameobject { "action": "edit_batch" }`（先 find + captureAs，再用 `$alias` 写；若 find 到 0 个会 early-stop 且不算 error）
    - 对于「脚本编译 + Console 校验」连续模式，优先用 `unity_workflow { "action": "compile_and_validate" }`
-   - 对于“装包 → 域加载/编译 → Console 校验”链路，优先用 `unity_workflow { "action": "install_package_and_validate", "id_or_url": "com.xxx" }`
    - **组件属性设置（关键）**：优先用 `unity_gameobject` 的 *批量形态*，减少填参出错
      - ✅ 推荐（批量）：`{ action: "set_component_properties" | "set_component_property", targetRef/target, componentName, componentProperties }`
      - ✅ 兼容（简写）：`{ action: "set_component_property", targetRef/target, componentName, propertyName, propertyValue }`
@@ -102,13 +99,13 @@ description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_*
 - `unity_workflow { "action": "checkpoint" }`
   - 内部：`unity_scene.ensure_scene_saved` →（可选）`unity_screenshot.capture*`
 
-### `unity_asset` / `unity_gameobject` 的 `create_batch` / `edit_batch` actions
+### `unity_asset` / `unity_gameobject` 的 `batch` action
 
-当你发现自己在重复调用同一个工具（例如连续 create/modify/add_component/ensure_*），优先改用 create_batch / edit_batch：
+当你发现自己在重复调用同一个工具（例如连续 create/modify/add_component/ensure_*），优先改用 batch：
 
 ```json
 {
-  "action": "create_batch",
+  "action": "batch",
   "mode": "stop_on_error",
   "ops": [
     { "id": "1", "action": "create", "params": { "name": "Root", "primitiveType": "Cube" }, "captureAs": "$root" },
@@ -117,10 +114,7 @@ description: Unity Editor自动化技能 - 优先使用 unity_workflow / unity_*
 }
 ```
 
-> 说明：
-> - `unity_gameobject.create_batch` 支持用 `captureAs: "$alias"` 绑定新建对象的 instanceID，并在后续 op 的 params 中用 `"$alias"` 或 `{ "ref": "$alias" }` 引用，减少额外的 find。
-> - `unity_gameobject.edit_batch`：用 `find` op 的 `captureAs` 抓取 instanceID，后续写 op 必须用 `$alias` 作为 target/parent。
-> - `unity_asset.edit_batch`：用 `search` op 的 `captureAs` 抓取 asset path，后续写 op 必须用 `$alias` 作为 path。
+> 说明：`unity_gameobject.batch` 支持用 `captureAs: "$alias"` 绑定 instanceID，并在后续 op 的 params 中用 `"$alias"` 或 `{ "ref": "$alias" }` 引用，减少额外的 find。
 >
 > ⚠️ 约束：写批里不要用 by_name 的 target/parent（名字定位属于“需要观测确认”的步骤，应拆成：先读 → 再写批）。
 
